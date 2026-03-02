@@ -29,6 +29,14 @@ Three MCP servers are enabled for this project:
 - Reserve `deep_research` for synthesis tasks requiring multiple sources
 - Use Excalidraw to visualize competitive landscapes, feature matrices, or architecture comparisons
 
+## Post-Implementation Checklist
+
+After implementing any plan in this project:
+1. Create `plans/active/<slug>.md` if it doesn't exist yet (use the template in `plans/ACTIVE.md`)
+2. Add/update the row in `plans/ACTIVE.md`
+3. Mark completed steps as `[x]` in the plan file
+4. Move to `plans/completed/<slug>.md` only when manual testing + scoring are finalized
+
 ## Self-Correction Protocol
 
 After any correction by the user, end your response with:

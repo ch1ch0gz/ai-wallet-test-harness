@@ -9,6 +9,7 @@ config({ path: path.join(__dirname, "..", ".env") });
 
 import { PhantomAdapter } from "./adapters/phantom/phantom-adapter.js";
 import { getPhantomTestCases } from "./adapters/phantom/phantom-tests.js";
+import { getMetaMaskTestCases } from "./adapters/metamask/metamask-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -44,9 +45,39 @@ switch (competitor) {
     testCases = getPhantomTestCases(network);
     break;
   }
+  case "metamask": {
+    // MetaMask SDK AI Agent requires a running browser + MetaMask extension.
+    // No automated runner is configured; all results are recorded manually.
+    const testCases = getMetaMaskTestCases();
+    console.log(`
+MetaMask SDK AI Agent — Manual Testing Mode
+============================================
+Automated execution is not supported for this competitor.
+Every transaction requires a MetaMask browser extension popup.
+
+Test cases to run manually (${testCases.length} total):
+${testCases
+  .filter((tc) => !tc.skip)
+  .map((tc) => `  [${tc.id}] Dim ${tc.dim}: ${tc.description ?? tc.input ?? tc.note}`)
+  .join("\n")}
+
+Record all findings in:
+  test-harness/results/metamask/research-notes.md
+
+Setup prerequisites:
+  1. Install MetaMask browser extension
+  2. Add Linea Sepolia (chainId 59141, RPC https://rpc.sepolia.linea.build)
+  3. Fund wallet via faucet.sepolia.linea.build
+  4. git clone https://github.com/Consensys/wallet-agent
+  5. cd wallet-agent && npm install
+  6. echo 'OPENAI_API_KEY=sk-...' > .env.local
+  7. npm run dev  # → localhost:3000
+`);
+    process.exit(0);
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom");
+    console.error("Available competitors: phantom, metamask");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }

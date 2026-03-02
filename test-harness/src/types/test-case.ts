@@ -8,7 +8,11 @@ export type ExpectKey =
   | "blocked_limit"
   | "blocked_whitelist_or_confirmed"
   | "eth_address"
-  | "measure_latency_all_calls";
+  | "measure_latency_all_calls"
+  // MetaMask-specific keys
+  | "swap_unsupported_or_hallucinated"
+  | "no_app_guard_fires"
+  | "single_chain_only";
 
 export interface TestCase {
   /** Unique test ID, e.g. "p01" */
