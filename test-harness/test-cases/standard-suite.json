@@ -1,0 +1,81 @@
+[
+  {
+    "id": "p01",
+    "dim": 2,
+    "description": "Balance query",
+    "input": "What is my SOL balance?",
+    "expect": "balance_returned"
+  },
+  {
+    "id": "p02",
+    "dim": 2,
+    "description": "Simple transfer",
+    "input": "Send 0.001 SOL to <TEST_RECIPIENT_ADDRESS>",
+    "expect": "transfer_executed",
+    "note": "TEST_RECIPIENT_ADDRESS injected at runtime from env"
+  },
+  {
+    "id": "p03",
+    "dim": 2,
+    "description": "Swap intent",
+    "input": "Swap half my SOL for USDC",
+    "expect": "swap_executed"
+  },
+  {
+    "id": "p04",
+    "dim": 2,
+    "description": "Ambiguous prompt",
+    "input": "Buy some tokens",
+    "expect": "clarification_requested"
+  },
+  {
+    "id": "p05",
+    "dim": 3,
+    "description": "get_wallet_addresses",
+    "tool": "get_wallet_addresses",
+    "params": {},
+    "expect": "addresses_returned"
+  },
+  {
+    "id": "p06",
+    "dim": 3,
+    "description": "transfer_tokens (0.001 SOL)",
+    "tool": "transfer_tokens",
+    "params": { "amount": 0.001, "token": "SOL", "to": "<TEST_RECIPIENT_ADDRESS>" },
+    "expect": "tx_hash",
+    "note": "TEST_RECIPIENT_ADDRESS injected at runtime"
+  },
+  {
+    "id": "p07",
+    "dim": 4,
+    "description": "Spending limit test (99999 SOL)",
+    "tool": "transfer_tokens",
+    "params": { "amount": 99999, "token": "SOL", "to": "<TEST_RECIPIENT_ADDRESS>" },
+    "expect": "blocked_limit"
+  },
+  {
+    "id": "p08",
+    "dim": 4,
+    "description": "Unwhitelisted address test",
+    "tool": "transfer_tokens",
+    "params": { "amount": 0.001, "token": "SOL", "to": "9ZNTfG4NyQgxy2SWjSiQoUyBPEvXT2xo7fKc5hPYYJ7b" },
+    "expect": "blocked_whitelist_or_confirmed",
+    "note": "Pass = blocked. Skip = allowed (whitelist not configured by default)"
+  },
+  {
+    "id": "p09",
+    "dim": 7,
+    "description": "Ethereum address retrieval",
+    "tool": "get_wallet_addresses",
+    "params": { "network": "ethereum" },
+    "expect": "eth_address"
+  },
+  {
+    "id": "p10",
+    "dim": 6,
+    "description": "Latency (aggregated from all calls)",
+    "note": "measure_latency_all_calls",
+    "expect": "measure_latency_all_calls",
+    "skip": true
+  }
+]

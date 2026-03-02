@@ -1,0 +1,24 @@
+{
+  "name": "ai-wallet-test-harness",
+  "version": "0.1.0",
+  "description": "Test harness for AI wallet competitor evaluation — Phantom MCP first",
+  "type": "module",
+  "scripts": {
+    "test": "tsx src/cli.ts",
+    "build": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.36.0",
+    "@modelcontextprotocol/sdk": "^1.5.0",
+    "@solana/web3.js": "^1.95.5",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "ora": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
+  }
+}

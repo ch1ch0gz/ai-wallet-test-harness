@@ -1,0 +1,23 @@
+# Internal / proprietary documents — never expose publicly
+Agentic Wallet Stage 0 - Intake Form V2.md
+Agentic-Wallet-Competitor-Evaluation-Framework.md
+
+# Dependencies
+test-harness/node_modules/
+
+# Secrets — never commit
+.env
+**/.env
+
+# Build output
+test-harness/dist/
+
+# Test results (generated at runtime)
+test-harness/results/**
+!test-harness/results/**/.gitkeep
+
+# macOS
+.DS_Store
+
+# Claude Code local settings
+.claude/settings.local.json
