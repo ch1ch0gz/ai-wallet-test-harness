@@ -12,7 +12,9 @@ export type ExpectKey =
   // MetaMask-specific keys
   | "swap_unsupported_or_hallucinated"
   | "no_app_guard_fires"
-  | "single_chain_only";
+  | "single_chain_only"
+  // Coinbase-specific keys
+  | "bridge_initiated";
 
 export interface TestCase {
   /** Unique test ID, e.g. "p01" */

@@ -10,6 +10,8 @@ config({ path: path.join(__dirname, "..", ".env") });
 import { PhantomAdapter } from "./adapters/phantom/phantom-adapter.js";
 import { getPhantomTestCases } from "./adapters/phantom/phantom-tests.js";
 import { getMetaMaskTestCases } from "./adapters/metamask/metamask-tests.js";
+import { CoinbaseAdapter } from "./adapters/coinbase/coinbase-adapter.js";
+import { getCoinbaseTestCases } from "./adapters/coinbase/coinbase-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -75,28 +77,48 @@ Setup prerequisites:
 `);
     process.exit(0);
   }
+  case "coinbase": {
+    // Coinbase uses EVM network IDs (e.g. "base-sepolia"), not Solana's "devnet".
+    // Read NETWORK_ID env var; fall back to "base-sepolia" if absent.
+    const cbNetwork =
+      networkArgIdx !== -1 ? argv[networkArgIdx + 1] : (process.env.NETWORK_ID ?? "base-sepolia");
+    adapter = new CoinbaseAdapter(cbNetwork, reporter);
+    testCases = getCoinbaseTestCases();
+    break;
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask");
+    console.error("Available competitors: phantom, metamask, coinbase");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }
 
 // ── Run ──────────────────────────────────────────────────────────────────────
-reporter.printHeader(adapter.name, network, today);
+reporter.printHeader(adapter.name, adapter.network, today);
 
 try {
   await adapter.initialize();
 } catch (err) {
   const msg = err instanceof Error ? err.message : String(err);
   console.error(`\n❌  Failed to initialize ${competitor}: ${msg}`);
-  console.error(`
-Prerequisite checklist:
+  if (competitor === "coinbase") {
+    console.error(`
+Coinbase AgentKit prerequisite checklist:
+  1. Create a CDP account at https://portal.cdp.coinbase.com
+  2. API Keys → Create API Key → copy CDP_API_KEY_ID and CDP_API_KEY_SECRET
+  3. Generate CDP_WALLET_SECRET: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+  4. Add all three to test-harness/.env (see .env.example for the full template)
+  5. Run once to obtain wallet address, then fund via https://faucet.base.org
+`);
+  } else {
+    console.error(`
+Phantom MCP prerequisite checklist:
   1. npm install -g @phantom/mcp-server
   2. PHANTOM_APP_ID=<id> phantom-mcp    ← one-time OAuth (opens browser)
   3. Copy .env.example → .env and fill in PHANTOM_APP_ID + TEST_RECIPIENT_ADDRESS
   4. Fund devnet wallet: solana airdrop 2 <address> --url devnet
 `);
+  }
   process.exit(1);
 }
 

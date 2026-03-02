@@ -8,6 +8,7 @@ Index of all in-progress plans. Each plan is a separate file under `plans/active
 |---|---|---|---|
 | Phantom MCP Test Harness | `active/phantom-mcp-test-harness.md` | 2026-02-26 | Implemented — awaiting user prereqs |
 | MetaMask SDK AI Agent | `active/metamask-sdk-agent.md` | 2026-03-02 | **DEFERRED** — scaffold built, manual testing skipped for now; scores unpublished |
+| Coinbase AgentKit | `active/coinbase-agentkit.md` | 2026-03-02 | Implementing — awaiting test run |
 
 ---
 
