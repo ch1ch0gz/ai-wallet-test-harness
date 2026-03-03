@@ -30,17 +30,8 @@ else
   fi
 fi
 
-# ── Stage everything that isn't .env or secrets ───────────────────────────────
-git add --all \
-  -- \
-  ':!*.env' \
-  ':!.env' \
-  ':!.env.local' \
-  ':!**/.env' \
-  ':!**/.env.local' \
-  ':!**/secrets*' \
-  ':!**/*secret*' \
-  ':!**/*credential*'
+# ── Stage all tracked/untracked files (.gitignore already excludes .env etc.) ──
+git add -A
 
 # ── Commit ────────────────────────────────────────────────────────────────────
 git commit -m "$MSG"
