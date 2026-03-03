@@ -14,7 +14,10 @@ export type ExpectKey =
   | "no_app_guard_fires"
   | "single_chain_only"
   // Coinbase-specific keys
-  | "bridge_initiated";
+  | "bridge_initiated"
+  // HeyElsa-specific keys
+  | "data_returned"
+  | "dry_run_executed";
 
 export interface TestCase {
   /** Unique test ID, e.g. "p01" */

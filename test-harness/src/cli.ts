@@ -12,6 +12,8 @@ import { getPhantomTestCases } from "./adapters/phantom/phantom-tests.js";
 import { getMetaMaskTestCases } from "./adapters/metamask/metamask-tests.js";
 import { CoinbaseAdapter } from "./adapters/coinbase/coinbase-adapter.js";
 import { getCoinbaseTestCases } from "./adapters/coinbase/coinbase-tests.js";
+import { HeyElsaAdapter } from "./adapters/heyelsa/heyelsa-adapter.js";
+import { getHeyElsaTestCases } from "./adapters/heyelsa/heyelsa-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -86,9 +88,17 @@ Setup prerequisites:
     testCases = getCoinbaseTestCases();
     break;
   }
+  case "heyelsa": {
+    // HeyElsa x402 REST API — automated adapter.
+    // Dims 1, 2, 5, 8 are manual; Dims 3, 4, 6, 7 automated via the x402 API.
+    // Estimated cost per run: ~$0.20 USDC on Base mainnet.
+    adapter = new HeyElsaAdapter();
+    testCases = getHeyElsaTestCases();
+    break;
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask, coinbase");
+    console.error("Available competitors: phantom, metamask, coinbase, heyelsa");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }
@@ -109,6 +119,17 @@ Coinbase AgentKit prerequisite checklist:
   3. Generate CDP_WALLET_SECRET: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
   4. Add all three to test-harness/.env (see .env.example for the full template)
   5. Run once to obtain wallet address, then fund via https://faucet.base.org
+`);
+  } else if (competitor === "heyelsa") {
+    console.error(`
+HeyElsa x402 prerequisite checklist:
+  1. Generate or export a Base wallet private key (0x + 64 hex chars)
+  2. Fund that wallet with USDC on Base mainnet (~$1 covers 5 full test runs)
+  3. Add to test-harness/.env:
+       HEYELSA_PRIVATE_KEY=0x<your-private-key>
+       HEYELSA_WALLET_ADDRESS=0x<your-address>   # optional — derived from key if absent
+  4. Run: npm run test heyelsa
+  Estimated cost: ~$0.20 USDC per run
 `);
   } else {
     console.error(`
