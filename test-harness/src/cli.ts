@@ -14,6 +14,7 @@ import { CoinbaseAdapter } from "./adapters/coinbase/coinbase-adapter.js";
 import { getCoinbaseTestCases } from "./adapters/coinbase/coinbase-tests.js";
 import { HeyElsaAdapter } from "./adapters/heyelsa/heyelsa-adapter.js";
 import { getHeyElsaTestCases } from "./adapters/heyelsa/heyelsa-tests.js";
+import { getPigeonTestCases } from "./adapters/pigeon/pigeon-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -96,9 +97,38 @@ Setup prerequisites:
     testCases = getHeyElsaTestCases();
     break;
   }
+  case "pigeon": {
+    // Pigeon has no public API or SDK — all testing is done via Telegram DM.
+    // No automated runner is configured; all results are recorded manually.
+    const testCases = getPigeonTestCases();
+    console.log(`
+Pigeon — Manual Testing Mode
+=============================
+Test via Telegram: DM @PigeonTradeBot (or t.me/PigeonTradeBot)
+Also available on: Discord, Farcaster, WhatsApp, SMS, and 7 more channels.
+Pigeon is free (beta) — no API fees. Fund the Privy wallet with ~0.002 ETH (~$5 at current prices) on Base mainnet for transfer/swap tests.
+
+Test cases to run manually (${testCases.filter((tc) => !tc.skip).length} total):
+${testCases
+  .filter((tc) => !tc.skip)
+  .map((tc) => `  [${tc.id}] Dim ${tc.dim}: ${tc.description ?? tc.input ?? tc.note}`)
+  .join("\n")}
+
+Record findings in:
+  test-harness/results/pigeon/research-notes.md
+
+Prerequisites:
+  1. Open Telegram and search for @PigeonTradeBot (or open t.me/PigeonTradeBot)
+  2. Send /start — wallet auto-provisioned by Privy (no seed phrase)
+  3. Note the wallet address shown
+  4. Send ~0.002 ETH (~$5 at current prices, Base mainnet) to the Privy wallet for transfer/swap tests
+  5. Run each test case above and record the bot response + latency in research-notes.md
+`);
+    process.exit(0);
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask, coinbase, heyelsa");
+    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }
