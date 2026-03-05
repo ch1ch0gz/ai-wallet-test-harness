@@ -19,8 +19,11 @@ Implement manual testing scaffold for Pigeon (pigeon.trade) and record competiti
 - [x] Update `plans/ACTIVE.md` — add Pigeon row
 - [ ] Build passes: `cd test-harness && npm run build`
 - [ ] Checklist prints: `npm run test pigeon`
-- [ ] User conducts manual testing via Telegram @PigeonTradeBot
-- [ ] Fill in `results/pigeon/research-notes.md` with all 8 dimension scores
+- [x] User conducts partial manual testing via Telegram @PigeonTradeBot (p01–p08, 2026-03-04)
+- [ ] **BLOCKED: fund Base mainnet wallet (~0.002 ETH) to continue**
+- [ ] Run p10 and p13 first (may work unfunded — read-only queries)
+- [ ] Run p09 (Hyperliquid perp — needs $10 USDC), p11/p12 (security — needs ETH to test real execution)
+- [ ] Finalize Dim 4 score after p11/p12 (currently 1/5; may reach 2/5 if address warnings observed)
 - [ ] Move to `plans/completed/pigeon.md` when scoring finalized
 
 ## Decision Log
@@ -33,6 +36,7 @@ Implement manual testing scaffold for Pigeon (pigeon.trade) and record competiti
 
 ## Progress Checkpoints
 - [x] Scaffold implemented — `npm run test pigeon` prints checklist, exits 0
-- [ ] Manual testing complete — all 13 test cases recorded in research-notes.md
-- [ ] Final scores confirmed — all 8 dims filled with rationale
+- [x] Partial testing complete — p01–p08 recorded (2026-03-04); interim score 25/40
+- [ ] Remaining tests (p09–p13) — blocked on mainnet funds (~0.002 ETH on Base)
+- [ ] Final scores confirmed — all 8 dims finalized after p09–p13
 - [ ] Plan moved to `plans/completed/pigeon.md`
