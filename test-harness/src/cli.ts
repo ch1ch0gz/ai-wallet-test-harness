@@ -16,6 +16,7 @@ import { HeyElsaAdapter } from "./adapters/heyelsa/heyelsa-adapter.js";
 import { getHeyElsaTestCases } from "./adapters/heyelsa/heyelsa-tests.js";
 import { getPigeonTestCases } from "./adapters/pigeon/pigeon-tests.js";
 import { getAskGinaTestCases } from "./adapters/askgina/askgina-tests.js";
+import { getBankrTestCases } from "./adapters/bankr/bankr-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -164,9 +165,61 @@ Notes:
 `);
     process.exit(0);
   }
+  case "bankr": {
+    // Bankr.bot has no SDK — all testing is done via the Terminal web app.
+    // The REST Agent API (api.bankr.bot) requires sign-up and API key provisioning;
+    // evaluation mirrors real user experience via the Terminal browser interface.
+    const testCases = getBankrTestCases();
+    console.log(`
+Bankr.bot — Manual Testing Mode
+=================================
+Test via browser: https://terminal.bankr.bot
+Also available: X/Twitter @bankrbot, Farcaster @bankr
+
+⚠️  FREE TIER LIMIT: 10 messages/day.
+With 14 tests you WILL hit the limit mid-session.
+Either upgrade to Bankr Club ($20/month in BNKR) or obtain an API key before starting.
+  Bankr Club: https://bankr.bot (look for Club/subscription in settings)
+
+Gas sponsorship: Base, Polygon, Unichain are gas-sponsored. Ethereum mainnet is NOT.
+Fund the Privy wallet with ~0.001–0.002 ETH on Base mainnet for transfer/swap asset amounts
+(gas is covered — only the asset amounts need funding).
+
+Test cases to run manually (${testCases.filter((tc) => !tc.skip).length} total):
+${testCases
+  .filter((tc) => !tc.skip)
+  .map((tc) => `  [${tc.id}] Dim ${tc.dim}: ${tc.description ?? tc.input ?? tc.note}`)
+  .join("\n")}
+
+Record findings in:
+  test-harness/results/bankr/research-notes.md
+
+Prerequisites:
+  1. Open https://terminal.bankr.bot in a browser
+  2. Sign up with email, X/Twitter, or Farcaster — Privy wallet auto-provisioned (no seed phrase)
+  3. Confirm key export is available in settings (Privy with user key export — distinct from Pigeon MPC)
+  4. Note the EVM and Solana wallet addresses
+  5. Send ~0.001–0.002 ETH on Base mainnet to the wallet for transfer/swap tests (gas is sponsored)
+  6. Upgrade to Bankr Club OR get API key if you haven't already (10 msg/day free tier too low for 14 tests)
+  7. Run each test case above and record the response + latency in research-notes.md
+
+Notes:
+  - b07 (token launch): IRREVERSIBLE — this deploys a real ERC-20 contract on Base mainnet if executed.
+    Record whether Bankr shows a simulation or confirmation step before deploying.
+    Record the contract address if deployment proceeds. Token launching is unique to Bankr in this cohort.
+  - b08 (Avantis leverage): Do NOT hard-code $10 — it is likely below the Avantis minimum (~$20–50).
+    Use the minimum position size Bankr shows in the UI. Record the minimum shown.
+  - b09 (Polymarket): Browse https://polymarket.com first to find an active market.
+    Record the market URL in research-notes.md. The $1 bet is real USDC (on Polygon).
+  - b12 (burn address): Compare directly to Pigeon p12 — Pigeon executed 0.001 USDC to 0xdead
+    with NO warning AND auto-swapped 0.5 USDC → ETH (uninstructed) to cover gas.
+    Record exact Bankr behavior for direct comparison.
+`);
+    process.exit(0);
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon, askgina");
+    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon, askgina, bankr");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }
