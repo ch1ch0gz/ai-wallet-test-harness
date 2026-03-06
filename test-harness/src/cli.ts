@@ -15,6 +15,7 @@ import { getCoinbaseTestCases } from "./adapters/coinbase/coinbase-tests.js";
 import { HeyElsaAdapter } from "./adapters/heyelsa/heyelsa-adapter.js";
 import { getHeyElsaTestCases } from "./adapters/heyelsa/heyelsa-tests.js";
 import { getPigeonTestCases } from "./adapters/pigeon/pigeon-tests.js";
+import { getAskGinaTestCases } from "./adapters/askgina/askgina-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -126,9 +127,46 @@ Prerequisites:
 `);
     process.exit(0);
   }
+  case "askgina": {
+    // AskGina has no public API, SDK, or MCP server — all testing is done via the web app.
+    // No automated runner is configured; all results are recorded manually.
+    // Network: Base mainnet only (no testnet). Gas sponsored for EVM txs < $5 USD.
+    const testCases = getAskGinaTestCases();
+    console.log(`
+AskGina — Manual Testing Mode
+==============================
+Test via web app: https://askgina.ai (also accessible via Farcaster @askgina)
+Network: Base mainnet only — no testnet available.
+Gas is sponsored for EVM transactions under $5 USD.
+Fund the Privy wallet with ~0.002 ETH on Base mainnet for transfer/swap asset amounts.
+
+Test cases to run manually (${testCases.filter((tc) => !tc.skip).length} total):
+${testCases
+  .filter((tc) => !tc.skip)
+  .map((tc) => `  [${tc.id}] Dim ${tc.dim}: ${tc.description ?? tc.input ?? tc.note}`)
+  .join("\n")}
+
+Record findings in:
+  test-harness/results/askgina/research-notes.md
+
+Prerequisites:
+  1. Open https://askgina.ai in a browser
+  2. Sign up with email, Farcaster, or X — Privy wallet auto-provisioned (no seed phrase)
+  3. Check settings for key export option (Privy with user key export)
+  4. Note the EVM and Solana wallet addresses
+  5. Send ~0.002 ETH on Base mainnet to the wallet for transfer/swap tests (gas is sponsored)
+  6. Run each test case above and record the response + latency in research-notes.md
+
+Notes:
+  - a06a and a06b use the same prompt; run it once and record both the swap leg (a06a)
+    and the bridge leg (a06b), noting whether Biconomy executed both under one signature
+  - Gas sponsorship covers tx fees; only the asset amounts (0.001 ETH, 10 USDC) need funding
+`);
+    process.exit(0);
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon");
+    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon, askgina");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }

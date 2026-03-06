@@ -10,7 +10,8 @@ Index of all in-progress plans. Each plan is a separate file under `plans/active
 | MetaMask SDK AI Agent | `active/metamask-sdk-agent.md` | 2026-03-02 | **DEFERRED** — scaffold built, manual testing skipped for now; scores unpublished |
 | Coinbase AgentKit | `completed/coinbase-agentkit.md` | 2026-03-02 | ✅ Complete — 27/40 |
 | HeyElsa | `completed/heyelsa.md` | 2026-03-02 | ✅ Complete — 31/40 |
-| Pigeon | `active/pigeon.md` | 2026-03-03 | p01–p08 complete (2026-03-04); **interim 25/40**; p09–p13 blocked on mainnet funds |
+| Pigeon | `completed/pigeon.md` | 2026-03-03 | All 13 tests complete (2026-03-06); **final 25/40** |
+| AskGina | `active/askgina.md` | 2026-03-05 | a01–a03 done (2026-03-06); **interim 18/40** (outage-degraded); a04–a13 blocked on backend unavailability |
 
 ---
 
