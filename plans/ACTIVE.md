@@ -13,7 +13,7 @@ Index of all in-progress plans. Each plan is a separate file under `plans/active
 | Pigeon | `completed/pigeon.md` | 2026-03-03 | All 13 tests complete (2026-03-06); **final 25/40** |
 | AskGina | `active/askgina.md` | 2026-03-05 | a01–a03 done (2026-03-06); **interim 18/40** (outage-degraded); a04–a13 blocked on backend unavailability |
 | Bankr.bot | `active/bankr.md` | 2026-03-06 | b01–b06 done 2026-03-06; b07–b14 blocked on 10 msg/day free tier; resume tomorrow |
-| Warden Protocol | `active/warden.md` | 2026-03-09 | ✅ Complete — **24/40** |
+| Warden Protocol | `active/warden.md` | 2026-03-09 | ✅ Complete — **25/40** |
 
 ---
 
