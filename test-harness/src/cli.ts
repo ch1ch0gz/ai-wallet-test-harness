@@ -17,6 +17,8 @@ import { getHeyElsaTestCases } from "./adapters/heyelsa/heyelsa-tests.js";
 import { getPigeonTestCases } from "./adapters/pigeon/pigeon-tests.js";
 import { getAskGinaTestCases } from "./adapters/askgina/askgina-tests.js";
 import { getBankrTestCases } from "./adapters/bankr/bankr-tests.js";
+import { WardenAdapter } from "./adapters/warden/warden-adapter.js";
+import { getWardenTestCases } from "./adapters/warden/warden-tests.js";
 import { TestRunner } from "./core/test-runner.js";
 import { Reporter } from "./core/reporter.js";
 import type { WalletAdapter } from "./adapters/base-adapter.js";
@@ -217,9 +219,74 @@ Notes:
 `);
     process.exit(0);
   }
+  case "warden": {
+    // Warden Protocol has no public SDK or REST API for end-user wallet operations.
+    // All testing is done via the web app and AI Trading Terminal.
+    // Both the main chat AND Agent Hub should be tested separately:
+    //   Main chat:       https://app.wardenprotocol.org
+    //   Agent Hub:       https://app.wardenprotocol.org/agent-hub
+    //   Trading Terminal: https://app.wardenprotocol.org/trade
+    const testCases = getWardenTestCases();
+    console.log(`
+Warden Protocol — Manual Testing Mode
+=======================================
+Test via web app: https://app.wardenprotocol.org
+Agent Hub (browse separately): https://app.wardenprotocol.org/agent-hub
+AI Trading Terminal (test w08): https://app.wardenprotocol.org/trade
+
+Wallet: Privy embedded smart accounts (ERC-4337 + delegated access).
+Sign up with email or social — no seed phrase.
+⚠️  Check settings for key export — smart account key export differs from plain Privy
+embedded wallets (AskGina) and Privy MPC (Pigeon). Record exactly what is shown.
+Fund the wallet with ~0.002 ETH on Base or Ethereum mainnet for execution tests.
+
+WARD TOKEN:
+  Some features (AI Trading Terminal, Agent Hub subscriptions) may require WARD.
+  If blocked by a WARD paywall mid-test, acquire WARD before proceeding:
+    Option A — buy WARD on Coinbase
+    Option B — in-app swap: any supported token → WARD on Base
+  Check whether a minimum WARD stake is required before accessing /trade and record the amount.
+
+KYC WARNING (w09 — tokenized stocks):
+  Tokenized real-world assets (AAPL, etc.) are regulated. Warden/Messari may require
+  identity verification before stock purchases — this could be a hard blocker.
+  Attempt w09 last, after completing all other tests. Record whether KYC is prompted.
+
+Test cases to run manually (${testCases.filter((tc) => !tc.skip).length} total):
+${testCases
+  .filter((tc) => !tc.skip)
+  .map((tc) => `  [${tc.id}] Dim ${tc.dim}: ${tc.description ?? tc.input ?? tc.note}`)
+  .join("\n")}
+
+Record findings in:
+  test-harness/results/warden/research-notes.md
+
+Prerequisites:
+  1. Open https://app.wardenprotocol.org in a browser
+  2. Sign up with email or social — Privy smart account auto-provisioned (no seed phrase)
+  3. Check settings for key export (record what is available — differs from AskGina/Pigeon/Bankr)
+  4. Note the EVM wallet address (and WardenChain address if shown separately)
+  5. Send ~0.002 ETH on Base or Ethereum mainnet for transfer/swap tests
+  6. Check if WARD is required for /trade — acquire via Coinbase or in-app swap if needed
+  7. Run w01–w07, w10–w14 first; run w08 (Trading Terminal) and w09 (tokenized stocks) last
+
+Notes:
+  - w06 (Agent Hub): try the NL query first in chat, then navigate to /agent-hub if no agents listed.
+    Record which path succeeded and list every agent name and capability shown.
+  - w08 (perps): use https://app.wardenprotocol.org/trade — record the exact URL used.
+    Record whether Messari Signals data powers the terminal.
+  - w09 (tokenized stocks): UNIQUE IN COHORT — no other tested competitor supports this.
+    Record: KYC requirement, asset/exchange/settlement chain, tokenization mechanism.
+    This is the most differentiated single feature Warden has.
+  - w03 (transfer): look for SPEx verification screen — this is Warden's unique verifiability
+    layer. Record any "proof of execution" or "verified intent" UI that appears.
+  - PUMPs rewards: record if WARD-convertible rewards appear at any point during testing.
+`);
+    process.exit(0);
+  }
   default:
     console.error(`Unknown competitor: "${competitor}"`);
-    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon, askgina, bankr");
+    console.error("Available competitors: phantom, metamask, coinbase, heyelsa, pigeon, askgina, bankr, warden");
     console.error("Usage: npm run test <competitor> [--network devnet|mainnet]");
     process.exit(1);
 }
